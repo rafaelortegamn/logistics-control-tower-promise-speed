@@ -306,3 +306,63 @@ function getAction(tipoSegmento) {
   if (tipoSegmento === "Carril") return "Revisar frecuencias/ruta";
   return "Revisar causa raíz";
 }
+
+export function buildWeeklyTrends(envios) {
+  const map = new Map();
+
+  const getWeekKey = (date) => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNum = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+    const year = d.getUTCFullYear();
+
+    return `${year}-W${String(weekNum).padStart(2, "0")}`;
+  };
+
+  envios.forEach((e) => {
+    if (!e.fecha_pedido) return;
+
+    const date = new Date(e.fecha_pedido);
+
+    if (Number.isNaN(date.getTime())) return;
+
+    const period = getWeekKey(date);
+
+    if (!map.has(period)) {
+      map.set(period, {
+        period,
+        total: 0,
+        late: 0,
+        cost: 0,
+        nextDay: 0,
+        twoDay: 0,
+        standard: 0,
+      });
+    }
+
+    const row = map.get(period);
+
+    row.total += 1;
+    row.late += Number(e.flag_entrega_tardia || 0);
+    row.cost += Number(e.costo_paquete || 0);
+
+    if (e.tipo_promesa === "Next Day") row.nextDay += 1;
+    if (e.tipo_promesa === "Two Day") row.twoDay += 1;
+    if (e.tipo_promesa === "Standard") row.standard += 1;
+  });
+
+  return Array.from(map.values())
+    .sort((a, b) => a.period.localeCompare(b.period))
+    .map((d) => ({
+      ...d,
+      nextDayPct: d.total ? Number(((d.nextDay / d.total) * 100).toFixed(1)) : 0,
+      twoDayPct: d.total ? Number(((d.twoDay / d.total) * 100).toFixed(1)) : 0,
+      standardPct: d.total ? Number(((d.standard / d.total) * 100).toFixed(1)) : 0,
+      lateRate: d.total ? Number(((d.late / d.total) * 100).toFixed(1)) : 0,
+      avgCost: d.total ? Number((d.cost / d.total).toFixed(2)) : 0,
+    }));
+}

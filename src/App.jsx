@@ -13,6 +13,8 @@ import {
   ZAxis,
   Cell,
   ReferenceLine,
+  LineChart,
+  Line,
 } from "recharts";
 import {
   AlertTriangle,
@@ -40,6 +42,7 @@ import {
   buildJourneyData,
   buildNetworkAnalysis,
   buildWarRoom,
+  buildWeeklyTrends,
 } from "./transformations";
 
 const Card = ({ children, className = "" }) => (
@@ -102,20 +105,17 @@ const Badge = ({ children, type }) => {
 export default function App() {
   const [activeTab, setActiveTab] = useState("executive");
   const [filterPromesa, setFilterPromesa] = useState("All");
-
   const { envios, eventos, segmentos, responsables, loading, error } = useCsvData();
-
   const processedData = useMemo(() => {
     const filteredEnvios = envios.filter(
       (e) => filterPromesa === "All" || e.tipo_promesa === filterPromesa
     );
-
     const kpis = buildExecutiveMetrics(filteredEnvios);
     const byPromesa = buildPromisePerformance(filteredEnvios);
     const journeyData = buildJourneyData(filteredEnvios, eventos);
     const networkAnalysis = buildNetworkAnalysis(filteredEnvios);
     const warRoom = buildWarRoom(segmentos, responsables);
-
+    const weeklyTrends = buildWeeklyTrends(filteredEnvios);
     const topRiesgoCritico = networkAnalysis[0];
     const topVolumenTardio = [...byPromesa].sort((a, b) => b.late - a.late)[0];
     const topOportunidad = warRoom[0];
@@ -132,6 +132,7 @@ export default function App() {
         journeyData,
         networkAnalysis,
         warRoom,
+        weeklyTrends
       },
     };
   }, [envios, eventos, segmentos, responsables, filterPromesa]);
@@ -651,6 +652,127 @@ export default function App() {
     );
   };
 
+  const renderTrends = () => (
+  <div className="space-y-6">
+    <div className="bg-slate-900 rounded-xl p-6 text-white shadow-lg">
+      <h2 className="text-2xl font-black tracking-tight mb-2">
+        Evolución Promise & Performance
+      </h2>
+      <p className="text-slate-300 font-medium text-sm">
+        Vista semanal calculada desde fecha_pedido. Permite monitorear el mix de promesa,
+        late rate y costo promedio por paquete a través del tiempo.
+      </p>
+    </div>
+
+    <Card>
+      <h3 className="text-lg font-black text-slate-800 mb-1">
+        Distribución porcentual de promesa de entrega
+      </h3>
+      <p className="text-sm font-medium text-slate-500 mb-4">
+        Participación semanal por tipo de promesa.
+      </p>
+
+      <div className="h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={charts.weeklyTrends} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+            <XAxis
+              dataKey="period"
+              angle={-35}
+              textAnchor="end"
+              height={60}
+              tick={{ fontWeight: 600, fill: "#64748b", fontSize: 11 }}
+            />
+            <YAxis tick={{ fontWeight: 600, fill: "#64748b" }} />
+            <RechartsTooltip />
+            <Legend />
+            <Bar dataKey="nextDayPct" stackId="a" name="Next Day %" fill="#64748b" />
+            <Bar dataKey="twoDayPct" stackId="a" name="Two Day %" fill="#94a3b8" />
+            <Bar dataKey="standardPct" stackId="a" name="Standard %" fill="#cbd5e1" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </Card>
+
+    <Card>
+      <h3 className="text-lg font-black text-slate-800 mb-1">
+        Porcentaje semanal de entregas tardías
+      </h3>
+      <p className="text-sm font-medium text-slate-500 mb-4">
+        Evolución semanal del late rate.
+      </p>
+
+      <div className="h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={charts.weeklyTrends} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+            <XAxis
+              dataKey="period"
+              angle={-35}
+              textAnchor="end"
+              height={60}
+              tick={{ fontWeight: 600, fill: "#64748b", fontSize: 11 }}
+            />
+            <YAxis
+              domain={["dataMin - 1", "dataMax + 1"]}
+              tick={{ fontWeight: 600, fill: "#64748b" }}
+            />
+            <RechartsTooltip />
+            <Legend />
+            <ReferenceLine y={15.44} stroke="#f43f5e" strokeDasharray="3 3" />
+            <Line
+              type="monotone"
+              dataKey="lateRate"
+              name="Late Rate %"
+              stroke="#f43f5e"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </Card>
+
+    <Card>
+      <h3 className="text-lg font-black text-slate-800 mb-1">
+        Costo promedio por paquete
+      </h3>
+      <p className="text-sm font-medium text-slate-500 mb-4">
+        Evolución semanal de la tarifa base promedio.
+      </p>
+
+      <div className="h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={charts.weeklyTrends} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+            <XAxis
+              dataKey="period"
+              angle={-35}
+              textAnchor="end"
+              height={60}
+              tick={{ fontWeight: 600, fill: "#64748b", fontSize: 11 }}
+            />
+            <YAxis
+              domain={["dataMin - 1", "dataMax + 1"]}
+             tick={{ fontWeight: 600, fill: "#64748b" }}
+            />
+            <RechartsTooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="avgCost"
+              name="Costo promedio"
+              stroke="#0f766e"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </Card>
+  </div>
+);
+
   const renderWarRoom = () => (
     <div className="space-y-6">
       <div className="bg-slate-900 rounded-xl p-6 text-white shadow-lg flex items-center justify-between">
@@ -811,6 +933,7 @@ export default function App() {
 
             {[
               { id: "executive", name: "Executive Overview", icon: Activity },
+              { id: "trends", name: "Promise Trends", icon: TrendingUp },
               { id: "journey", name: "Journey & Bottlenecks", icon: MapPin },
               { id: "cost", name: "Network & Falsa Economía", icon: DollarSign },
               { id: "warroom", name: "War Room Queue", icon: Crosshair },
@@ -867,6 +990,7 @@ export default function App() {
         <main className="flex-1 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-76px)]">
           <div className="max-w-7xl mx-auto">
             {activeTab === "executive" && renderExecutive()}
+            {activeTab === "trends" && renderTrends()}
             {activeTab === "journey" && renderJourney()}
             {activeTab === "cost" && renderCost()}
             {activeTab === "warroom" && renderWarRoom()}
