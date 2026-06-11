@@ -1,2 +1,2 @@
-# logistics-control-tower-promise-speed
-Interactive logistics control tower built with React, Vite and Recharts using synthetic shipment-level data. The dashboard monitors promise compliance, late rate, cost-to-serve, CX friction, operational bottlenecks and a prioritized war room queue.
+# Disclaimer
+Este proyecto utiliza datos completamente sintéticos/mock con fines de portafolio y aprendizaje. No contiene datos reales, confidenciales ni información propietaria de ninguna empresa.
