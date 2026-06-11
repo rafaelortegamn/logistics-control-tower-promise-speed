@@ -1,0 +1,19 @@
+﻿segment_id,tipo_segmento,nodo_o_carril,area_responsable,volumen,late_rate,score_impacto_cx,costo_to_serve,score_controlabilidad,score_esfuerzo,score_oportunidad
+SEG_CARRIL_01,Carril,CDMX-BAJIO,Middle Mile,529,0.1248,2.66,79.34,3,3,175.61
+SEG_CARRIL_02,Carril,CDMX-GDL,Middle Mile,567,0.1534,2.69,79.13,3,3,233.97
+SEG_CARRIL_03,Carril,CDMX-MTY,Middle Mile,583,0.1715,2.8,78.89,2,4,139.98
+SEG_CARRIL_04,Carril,GDL-CDMX,Middle Mile,585,0.1504,2.91,78.59,3,3,256.03
+SEG_CARRIL_05,Carril,GDL-MTY,Middle Mile,541,0.1996,2.96,79.27,2,4,159.82
+SEG_CARRIL_06,Carril,GDL-OCCIDENTE,Middle Mile,555,0.1982,3.63,79.58,2,4,199.65
+SEG_CARRIL_07,Carril,MTY-CDMX,Middle Mile,542,0.1273,2.88,79.28,3,3,198.71
+SEG_CARRIL_08,Carril,PUE-CDMX,Middle Mile,552,0.1377,2.56,79.72,4,2,389.17
+SEG_CARRIL_09,Carril,QRO-CDMX,Middle Mile,546,0.1245,2.47,79.65,4,2,335.81
+SEG_FC_01,Nodo Fulfillment,FC_CDMX_01,Fulfillment,986,0.1481,2.77,79.01,4,2,808.99
+SEG_FC_02,Nodo Fulfillment,FC_GDL_01,Fulfillment,985,0.1756,2.68,79.56,4,3,618.07
+SEG_FC_03,Nodo Fulfillment,FC_MTY_01,Fulfillment,1005,0.1871,3.12,79.33,4,3,782.23
+SEG_FC_04,Nodo Fulfillment,FC_PUE_01,Fulfillment,1001,0.1359,2.63,79.01,4,2,715.55
+SEG_FC_05,Nodo Fulfillment,FC_QRO_01,Fulfillment,1023,0.1261,3.0,79.39,4,2,774.0
+SEG_CARRIER_01,Carrier,Carrier_A,Last Mile,1422,0.1308,2.44,85.3,4,2,907.67
+SEG_CARRIER_02,Carrier,Carrier_B,Last Mile,1478,0.1387,2.79,81.46,3,3,571.95
+SEG_CARRIER_03,Carrier,Carrier_C,Last Mile,1307,0.1882,3.23,71.32,2,4,397.25
+SEG_CARRIER_04,Carrier,Carrier_D,Last Mile,793,0.1702,3.03,77.43,3,3,408.95
