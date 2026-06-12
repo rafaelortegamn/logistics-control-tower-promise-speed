@@ -141,7 +141,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8">
-          <div className="text-xl font-black text-slate-800">Cargando CSV locales...</div>
+          <div className="text-xl font-black text-slate-800">Cargando datos ilustrativos...</div>
           <div className="text-sm text-slate-500 mt-2">Leyendo envíos, eventos, segmentos y responsables.</div>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default function App() {
           value={`${(kpis.lateRate * 100).toFixed(2)}%`}
           subtitle={`${kpis.tardios.toLocaleString()} tardíos`}
           icon={AlertTriangle}
-          colorClass={kpis.lateRate >= 0.1544 ? "text-rose-600" : "text-emerald-600"}
+          colorClass={kpis.lateRate >= 0.12 ? "text-rose-600" : "text-emerald-600"}
         />
 
         <Metric
@@ -896,7 +896,7 @@ export default function App() {
               Control Tower : Promise & Speed
             </h1>
             <p className="text-xs font-semibold text-indigo-300 uppercase tracking-widest mt-0.5">
-              Executive Logistics Dashboard · CSV Local
+              Executive Logistics Dashboard · Datos ilustrativos
             </p>
           </div>
         </div>
